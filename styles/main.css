@@ -75,7 +75,7 @@ main, #messages-card {
   width: calc(100% - 40px);
   padding: 5px 0 5px 10px;
 }
-.message-container .name {
+.message-container .meta-bottom {
   display: inline-block;
   width: 100%;
   padding-left: 40px;
@@ -83,6 +83,16 @@ main, #messages-card {
   font-style: italic;
   font-size: 12px;
   box-sizing: border-box;
+}
+.message-container .name {
+  display: inline-block;
+  width: 50%;
+  text-align: left;
+}
+.message-container .date-time {
+  display: inline-block;
+  width: 50%;
+  text-align: right;
 }
 #message-form {
   display: flex;

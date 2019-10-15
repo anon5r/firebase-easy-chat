@@ -47,7 +47,7 @@ EasyChat.prototype.initFirebase = function() {
     .onSnapshot(function(querySnapshot) {
       querySnapshot.docChanges().forEach(function(change) {
         if (change.type === "added") {
-          that.displayMessage(change.doc.id, change.doc.data().name, change.doc.data().message, change.doc.data().photoURL)
+          that.displayMessage(change.doc.id, change.doc.data().name, change.doc.data().message, change.doc.data().photoURL, change.doc.data().timestamp)
         }
       });
     });
@@ -75,7 +75,7 @@ EasyChat.prototype.loadMessages = function() {
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        this.displayMessage(doc.id, doc.data().name, doc.data().message, doc.data().photoURL)
+        this.displayMessage(doc.id, doc.data().name, doc.data().message, doc.data().photoURL, doc.data().timestamp)
       });
     })
 };
@@ -199,18 +199,21 @@ EasyChat.MESSAGE_TEMPLATE =
   '<div class="message-container">' +
   '<div class="spacing"><div class="pic"></div></div>' +
   '<div class="message"></div>' +
-  '<div class="name"></div>' +
+  '<div class="meta-bottom">' +
+      '<div class="name"></div>' +
+      '<div class="date-time"></div>' +
+  '</div>' +
   '</div>';
 
 // A loading image URL.
 // EasyChat.LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif';
 
 // Displays a Message in the UI.
-EasyChat.prototype.displayMessage = function(key, name, text, picUrl) {
+EasyChat.prototype.displayMessage = function(key, name, text, picUrl, timestamp) {
   var div = document.getElementById(key);
 
   if (!div) {
-    var container = document.createElement('div');
+    let container = document.createElement('div');
     container.innerHTML = EasyChat.MESSAGE_TEMPLATE;
     div = container.firstChild;
     div.setAttribute('id', key);
@@ -220,12 +223,15 @@ EasyChat.prototype.displayMessage = function(key, name, text, picUrl) {
     div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
   }
   div.querySelector('.name').textContent = name;
-  var messageElement = div.querySelector('.message');
+  let messageElement = div.querySelector('.message');
   if (text) {
     messageElement.textContent = text;
     // 改行を<br>で置き換え.
     messageElement.innerHTML = messageElement.innerHTML.replace(/\n/g, '<br>');
   }
+  let locale = navigator.language ? navigator.language : 'en-US';
+
+  div.querySelector('.date-time').textContent = timestamp.toDate().toLocaleString(locale);
 
   // Show the card fading-in.
   setTimeout(function() {
